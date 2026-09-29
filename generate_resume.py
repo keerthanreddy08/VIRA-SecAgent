@@ -1,6 +1,6 @@
 """
 Generates a perfect, ATS-compliant 1-page PDF resume
-for Kandhakatla Keerthan Reddy, featuring the VIRA-SecAgent project.
+for Kandhakatla Keerthan Reddy, featuring the live VIRA-SecAgent GitHub repository link.
 """
 import os
 from reportlab.lib.pagesizes import letter
@@ -11,7 +11,6 @@ from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
 
 
 def generate_pdf_resume(output_path: str):
-    # Tight margins for a clean single page
     doc = SimpleDocTemplate(
         output_path,
         pagesize=letter,
@@ -120,7 +119,7 @@ def generate_pdf_resume(output_path: str):
     # 2. PROFESSIONAL SUMMARY
     story.append(Paragraph("PROFESSIONAL SUMMARY", style_section))
     summary_text = (
-        "<b>AI & Cybersecurity Engineer</b> specializing in <b>Agentic AI</b>, <b>Autonomous SOC Systems</b>, and "
+        "<b>AI &amp; Cybersecurity Engineer</b> specializing in <b>Agentic AI</b>, <b>Autonomous SOC Systems</b>, and "
         "<b>SIEM Telemetry (Wazuh, Elastic, Sysmon)</b>. Proven expertise building cognitive reasoning agents "
         "(ReAct loops) and sub-millisecond RAG pipelines mapped to <b>MITRE ATT&amp;CK</b> and <b>NIST SP 800-61</b> "
         "standards, bridging machine learning models with real-time cybersecurity defense operations."
@@ -182,7 +181,7 @@ def generate_pdf_resume(output_path: str):
     # Project 1: VIRA-SecAgent
     p1_head = [
         [
-            Paragraph("<b>VIRA-SecAgent: Autonomous Cybersecurity Incident Response &amp; Threat Hunting Agent</b>", style_job_title),
+            Paragraph('<b><a href="https://github.com/keerthanreddy08/VIRA-SecAgent"><font color="#0F172A">VIRA-SecAgent: Autonomous Cybersecurity Incident Response Agent</font></a></b> | <a href="https://github.com/keerthanreddy08/VIRA-SecAgent"><font color="#0284C7">GitHub</font></a>', style_job_title),
             Paragraph("Python, RAG, ReAct, MITRE ATT&amp;CK, Wazuh", style_job_meta)
         ]
     ]
@@ -198,7 +197,7 @@ def generate_pdf_resume(output_path: str):
     # Project 2: SIEM Enterprise Monitoring
     p2_head = [
         [
-            Paragraph("<b>Enterprise SIEM Log Analysis &amp; Threat Detection System</b>", style_job_title),
+            Paragraph('<b><a href="https://github.com/keerthanreddy08/SIEM-Implementation"><font color="#0F172A">Enterprise SIEM Log Analysis &amp; Threat Detection System</font></a></b> | <a href="https://github.com/keerthanreddy08/SIEM-Implementation"><font color="#0284C7">GitHub</font></a>', style_job_title),
             Paragraph("Wazuh, Security Onion, Elastic Stack, OSSEC", style_job_meta)
         ]
     ]
@@ -212,7 +211,7 @@ def generate_pdf_resume(output_path: str):
     # Project 3: SmartLoan Explainable AI
     p3_head = [
         [
-            Paragraph("<b>SmartLoan: Explainable AI Loan Eligibility &amp; Financial Risk Engine</b>", style_job_title),
+            Paragraph('<b><a href="https://github.com/keerthanreddy08/smartloan"><font color="#0F172A">SmartLoan: Explainable AI Loan Eligibility &amp; Risk Engine</font></a></b> | <a href="https://github.com/keerthanreddy08/smartloan"><font color="#0284C7">GitHub</font></a>', style_job_title),
             Paragraph("Python, Scikit-Learn, XGBoost, SHAP, Pandas", style_job_meta)
         ]
     ]
