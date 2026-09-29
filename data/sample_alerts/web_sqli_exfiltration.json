@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-09-29T22:08:19.412+0000",
+  "rule": {
+    "level": 11,
+    "description": "ModSecurity/WAF detected SQL injection payload in query string followed by 200 OK HTTP response with large data transfer.",
+    "id": "31102",
+    "groups": ["web", "waf", "sql_injection", "initial_access"]
+  },
+  "agent": {
+    "id": "003",
+    "name": "edge-nginx-waf-01",
+    "ip": "10.0.3.10"
+  },
+  "data": {
+    "srcip": "203.0.113.195",
+    "request": "GET /api/v1/customers?id=1' UNION SELECT null, username, password_hash, email FROM admin_users-- HTTP/1.1",
+    "status": "200",
+    "bytes_sent": "84210",
+    "user_agent": "sqlmap/1.7#stable"
+  },
+  "full_log": "ModSecurity: Warning. Matched phrase 'UNION SELECT' at ARGS:id. IP: 203.0.113.195 URI: /api/v1/customers?id=1' UNION SELECT null..."
+}

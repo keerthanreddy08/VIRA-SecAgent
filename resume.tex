@@ -1,0 +1,97 @@
+\documentclass[a4paper,10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+\definecolor{primary}{RGB}{15, 23, 42}
+\definecolor{accent}{RGB}{2, 132, 199}
+\definecolor{text}{RGB}{30, 41, 59}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=accent,
+    urlcolor=accent
+}
+
+\titleformat{\section}{\large\bfseries\color{accent}\uppercase}{}{0em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{6pt}{3pt}
+
+\setlist[itemize]{leftmargin=1.2em, itemsep=1pt, topsep=1pt}
+
+\begin{document}
+\pagestyle{empty}
+
+% HEADER
+\begin{center}
+    {\huge\textbf{\color{primary} KANDHAKATLA KEERTHAN REDDY}}\\[3pt]
+    \small Hyderabad, India \ $|$ \ +91 9121932637 \ $|$ \ 
+    \href{mailto:mail2keerthanreddy@gmail.com}{mail2keerthanreddy@gmail.com} \ $|$ \ 
+    \href{https://linkedin.com/in/keerthan08}{linkedin.com/in/keerthan08} \ $|$ \ 
+    \href{https://github.com/keerthanreddy08}{github.com/keerthanreddy08}
+\end{center}
+
+% PROFESSIONAL SUMMARY
+\section{Professional Summary}
+\small{\textbf{AI \& Cybersecurity Engineer} specializing in \textbf{Agentic AI}, \textbf{Autonomous SOC Systems}, and \textbf{SIEM Telemetry (Wazuh, Elastic, Sysmon)}. Proven expertise building cognitive reasoning agents (ReAct loops) and sub-millisecond RAG pipelines mapped to \textbf{MITRE ATT\&CK} and \textbf{NIST SP 800-61} standards, bridging machine learning models with real-time cybersecurity defense operations.}
+
+% TECHNICAL SKILLS
+\section{Technical Skills}
+\begin{itemize}[leftmargin=0.2em, itemsep=1.5pt]
+    \item[] \textbf{Agentic AI \& RAG:} Autonomous Agents (ReAct loops), Retrieval-Augmented Generation (RAG), Semantic Vector Search, TF-IDF / Embeddings, Prompt Engineering, Scikit-Learn
+    \item[] \textbf{Cybersecurity \& SIEM:} Wazuh, Elastic Stack (ELK), Security Onion, OSSEC, Sysmon, MITRE ATT\&CK, NIST SP 800-61, Sigma Rules, Wireshark, Cisco Packet Tracer
+    \item[] \textbf{Languages \& Tools:} Python (Flask, NumPy, Pandas, Scikit-Learn), C, Bash, PowerShell, REST APIs, Git, Linux (Ubuntu/Debian)
+\end{itemize}
+
+% EXPERIENCE
+\section{Experience}
+\noindent\textbf{Krutanic Solutions} \hfill \textbf{Feb 2026 -- Apr 2026}\\
+\textit{Cyber Security Intern} \hfill \textit{Bangalore, India}
+\begin{itemize}
+    \item Monitored network traffic, firewall telemetry, and endpoint logs using packet inspection tools and SIEM platforms to detect anomalous intrusion indicators.
+    \item Analyzed authentication and access logs to detect brute-force attempts and policy violations; assisted in vulnerability assessments and threat mapping.
+    \item Collaborated on standard incident handling workflows aligned with security best practices and network defense policies.
+\end{itemize}
+
+% PROJECTS
+\section{Projects}
+\noindent\textbf{VIRA-SecAgent: Autonomous Cybersecurity Incident Response \& Threat Hunting Agent} \hfill \textbf{Python, RAG, ReAct, MITRE, Wazuh}
+\begin{itemize}
+    \item Designed an autonomous SOC Copilot implementing a 5-stage cognitive reasoning loop (ReAct) to ingest, normalize, and triage heterogeneous SIEM telemetry (Wazuh JSON, Windows Event 4688, Sysmon, Syslog).
+    \item Built a sub-millisecond semantic RAG retriever indexing the MITRE ATT\&CK Enterprise Matrix and NIST SP 800-61 playbooks, achieving 100\% top-1 technique resolution across benchmark attack vectors.
+    \item Synthesized active containment scripts (Linux iptables/ufw drop rules, Windows PowerShell quarantine, AD lockout) and auto-generated universal Sigma detection rules (YAML) for instant SIEM ingestion.
+    \item Developed a real-time SecOps dashboard and REST API featuring interactive reasoning traces, dynamic risk scoring (0--100), and automated incident audit reports.
+\end{itemize}
+
+\vspace{2pt}
+\noindent\textbf{Enterprise SIEM Log Analysis \& Threat Detection System} \hfill \textbf{Wazuh, Security Onion, Elastic Stack, OSSEC}
+\begin{itemize}
+    \item Implemented centralized security log aggregation and correlation across multi-node Linux and Windows servers using Wazuh, Security Onion, and Elastic Stack.
+    \item Configured custom detection rules to pinpoint SSH/RDP brute-force attacks, unauthorized privilege escalation, and suspicious lateral movement in real time.
+\end{itemize}
+
+\vspace{2pt}
+\noindent\textbf{SmartLoan: Explainable AI Loan Eligibility \& Financial Risk Engine} \hfill \textbf{Python, Scikit-Learn, XGBoost, SHAP, Pandas}
+\begin{itemize}
+    \item Built an end-to-end risk assessment system integrating XGBoost and Random Forest models to evaluate multi-factor applicant financial profiles.
+    \item Integrated explainable AI using SHAP values to decode feature importance and provide transparent, auditable decision boundaries.
+\end{itemize}
+
+% EDUCATION
+\section{Education}
+\noindent\textbf{ACE Engineering College} -- B.Tech in CSE (Artificial Intelligence \& Machine Learning) \hfill \textbf{Aug 2023 -- May 2027}\\
+\textit{Hyderabad, India}\\[2pt]
+\noindent\textbf{Masters Junior College} -- MPC (Senior Secondary Education) \hfill \textbf{Jun 2021 -- Apr 2023}\\
+\textit{Hyderabad, India}
+
+% CERTIFICATIONS
+\section{Certifications \& Training}
+\begin{itemize}
+    \item \textbf{Cyber Security Internship Certification} -- Krutanic Solutions
+    \item \textbf{Exploring Networking \& Infrastructure} -- Cisco Packet Tracer
+    \item \textbf{Programming Essentials in C} -- Cisco Networking Academy
+\end{itemize}
+
+\end{document}

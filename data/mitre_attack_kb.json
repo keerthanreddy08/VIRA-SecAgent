@@ -1,0 +1,74 @@
+[
+  {
+    "technique_id": "T1110.001",
+    "name": "Password Guessing (Brute Force)",
+    "tactic": "Credential Access",
+    "description": "Adversaries may guess passwords to gain access to target systems or valid accounts. In brute force password guessing, adversaries systematically try passwords from a dictionary or randomized list against an authentication service such as SSH, RDP, or web logins.",
+    "keywords": ["ssh", "failed login", "sshd", "brute force", "authentication failure", "pam_unix", "invalid user", "rdp", "hydra", "medusa"],
+    "detection": "Monitor authentication logs (e.g., /var/log/auth.log, /var/log/secure, Windows Event ID 4625) for high volumes of failed login attempts followed by a potential success from the same IP address.",
+    "mitigation": "M1036 (Account Use Policies), M1032 (Multi-factor Authentication), M1037 (Filter Network Traffic - IP rate limiting / fail2ban / firewall dropping)."
+  },
+  {
+    "technique_id": "T1059.001",
+    "name": "PowerShell Command and Scripting Interpreter",
+    "tactic": "Execution",
+    "description": "Adversaries may abuse PowerShell commands and scripts for execution. PowerShell is a powerful interactive command-line interface and scripting environment. Attackers leverage encoded commands (-Enc, -EncodedCommand), download cradles (IEX, DownloadString), and hidden window execution flags (-W Hidden) to evade basic scrutiny.",
+    "keywords": ["powershell", "encodedcommand", "-enc", "downloadstring", "iex", "invoke-expression", "bypass", "hidden", "reverse shell", "cradle"],
+    "detection": "Enable and inspect PowerShell Script Block Logging (Event ID 4104), Module Logging (Event ID 4103), and Process Creation (Event ID 4688 / Sysmon Event 1) with CommandLine capture.",
+    "mitigation": "M1038 (Execution Prevention - PowerShell Constrained Language Mode), M1026 (Privileged Account Management), M1049 (Antivirus/EDR behavior blocking)."
+  },
+  {
+    "technique_id": "T1548.003",
+    "name": "Sudo and Sudo Caching (Abuse Elevation Control)",
+    "tactic": "Privilege Escalation",
+    "description": "Adversaries may abuse sudo configuration or cached credentials to execute commands with elevated privileges (root). Attackers who compromise a low-privileged account (such as www-data or service accounts) may check sudo -l or exploit misconfigured sudoers rules or setuid binaries to read /etc/shadow or spawn a root shell.",
+    "keywords": ["sudo", "sudoers", "privilege escalation", "root", "shadow", "/etc/shadow", "wheel", "setuid", "su", "elevation"],
+    "detection": "Audit sudo command history via auth.log, syslog, or auditd. Look for commands invoked with sudo by service/web accounts, or modifications to /etc/sudoers.",
+    "mitigation": "M1026 (Privileged Account Management - restrict sudo access), M1028 (Operating System Configuration - enforce strict sudoers policies and NOPASSWD elimination)."
+  },
+  {
+    "technique_id": "T1490",
+    "name": "Inhibit System Recovery",
+    "tactic": "Impact",
+    "description": "Adversaries may delete or remove built-in system recovery features, such as Volume Shadow Copies, backup catalogs, or boot configuration data, to prevent recovery after a ransomware deployment or destructive attack. Common commands include 'vssadmin.exe delete shadows /all /quiet' and 'wmic shadowcopy delete'.",
+    "keywords": ["vssadmin", "delete shadows", "shadowcopy", "bcdedit", "recoveryenabled", "wbadmin", "ransomware", "backup deletion"],
+    "detection": "Monitor process execution logs (Sysmon Event 1, Windows Event 4688) for invocations of vssadmin.exe, wmic.exe, or bcdedit.exe with shadow deletion parameters.",
+    "mitigation": "M1022 (Restrict File and Directory Permissions), M1018 (User Account Management - enforce least privilege), M1053 (Data Backup - immutable offline/cloud backups)."
+  },
+  {
+    "technique_id": "T1190",
+    "name": "Exploit Public-Facing Application",
+    "tactic": "Initial Access",
+    "description": "Adversaries may attempt to exploit vulnerabilities in Internet-facing software (e.g., SQL Injection, Remote Code Execution in web applications, CMS exploits) to gain an initial foothold or exfiltrate sensitive backend database contents.",
+    "keywords": ["sql injection", "sqli", "union select", "1=1", "public-facing", "apache", "nginx", "waf alert", "web attack", "database exfiltration"],
+    "detection": "Deploy Web Application Firewalls (WAF) and analyze web server access logs for anomalous SQL syntax, suspicious URI parameters, and high volume HTTP 500 error responses.",
+    "mitigation": "M1050 (Exploit Protection), M1041 (Encrypt Sensitive Information), M1016 (Vulnerability Scanning & Input Sanitization/Prepared Statements)."
+  },
+  {
+    "technique_id": "T1078",
+    "name": "Valid Accounts",
+    "tactic": "Defense Evasion",
+    "description": "Adversaries may obtain and abuse credentials of existing accounts as a means of gaining Initial Access, Persistence, Privilege Escalation, or Defense Evasion. Compromised credentials may be used to log in legitimately via VPN or RDP without triggering malware alarms.",
+    "keywords": ["valid accounts", "compromised credentials", "impossible travel", "unusual logon time", "vpn anomaly", "ad account", "credential abuse"],
+    "detection": "Analyze user behavior analytics (UBA) for concurrent logins, impossible travel velocities, and logins from unexpected geographical locations or atypical off-hours.",
+    "mitigation": "M1032 (Multi-factor Authentication), M1030 (Network Segmentation), M1018 (Account Management - periodic credential rotation and strict session timeouts)."
+  },
+  {
+    "technique_id": "T1021.002",
+    "name": "Remote Services: SMB/Windows Admin Shares",
+    "tactic": "Lateral Movement",
+    "description": "Adversaries may use SMB to interact with Windows Admin Shares (e.g., C$, ADMIN$) to remotely execute code and propagate laterally within a network using tools like PsExec or winexe.",
+    "keywords": ["smb", "admin$", "c$", "psexec", "lateral movement", "port 445", "named pipe", "remote service"],
+    "detection": "Monitor network traffic for anomalous SMB connections between workstations, and track Event ID 7045 (New Service Installed) or Event ID 5145 (Network Share Object Checked).",
+    "mitigation": "M1035 (Limit Access to Resource Over Network - block port 445 between endpoints), M1026 (Privileged Account Management - disable Remote UAC and administrative shares where unnecessary)."
+  },
+  {
+    "technique_id": "T1046",
+    "name": "Network Service Discovery",
+    "tactic": "Discovery",
+    "description": "Adversaries may attempt to get a listing of services running on remote hosts, including port scanning (e.g. Nmap, Masscan, SYN scans) to identify exploitable listening daemons.",
+    "keywords": ["port scan", "syn scan", "nmap", "network discovery", "connection refused flood", "port sweep", "reconnaissance"],
+    "detection": "Use Network Intrusion Detection Systems (NIDS/Suricata/Snort) to detect rapid port sweeps and half-open SYN packets from a single source IP.",
+    "mitigation": "M1030 (Network Segmentation), M1037 (Filter Network Traffic - stateful firewall drop rules and rate limiting)."
+  }
+]

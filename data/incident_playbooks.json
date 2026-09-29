@@ -1,0 +1,77 @@
+[
+  {
+    "playbook_id": "IR-PB-BRUTEFORCE",
+    "name": "NIST SP 800-61: Authentication & Brute Force Incident Response",
+    "trigger_technique": "T1110.001",
+    "severity_baseline": "MEDIUM_TO_HIGH",
+    "containment_steps": [
+      "Step 1: Identify offending Source IP and inspect authentication success ratio.",
+      "Step 2: Apply immediate temporary network firewall drop rule (iptables/ufw or Windows Firewall) to block offending IP.",
+      "Step 3: Force temporary session termination and password reset on targeted accounts if any successful login occurred.",
+      "Step 4: Verify Fail2Ban or rate-limiting daemon status on SSH/RDP daemon.",
+      "Step 5: Enforce public-key authentication or Multi-Factor Authentication (MFA)."
+    ],
+    "verification_query": "grep 'Accepted' /var/log/auth.log | grep <OFFENDING_IP>",
+    "automated_action_type": "FIREWALL_DROP_IP"
+  },
+  {
+    "playbook_id": "IR-PB-POWERSHELL-OBF",
+    "name": "NIST SP 800-61: Suspicious Script Execution & Defense Evasion",
+    "trigger_technique": "T1059.001",
+    "severity_baseline": "HIGH_TO_CRITICAL",
+    "containment_steps": [
+      "Step 1: Isolate host endpoint from local subnet to prevent lateral movement (maintain SOC agent connectivity).",
+      "Step 2: Terminate offending PowerShell process tree and record process GUID and parent PID.",
+      "Step 3: Base64 decode obfuscated payload string and extract C2 IP/domain IOCs.",
+      "Step 4: Check DNS / Proxy logs for beaconing requests to extracted C2 endpoints.",
+      "Step 5: Submit extracted binary or staging script to malware sandbox for behavioral analysis."
+    ],
+    "verification_query": "Get-WinEvent -FilterHashtable @{LogName='Microsoft-Windows-PowerShell/Operational'; Id=4104}",
+    "automated_action_type": "PROCESS_KILL_AND_ISOLATE"
+  },
+  {
+    "playbook_id": "IR-PB-PRIV-ESC",
+    "name": "NIST SP 800-61: Unauthorized Privilege Escalation Incident Response",
+    "trigger_technique": "T1548.003",
+    "severity_baseline": "CRITICAL",
+    "containment_steps": [
+      "Step 1: Immediately revoke sudo / administrative privileges for the suspect account.",
+      "Step 2: Lock out suspect account (usermod -L <username> or Disable-ADAccount).",
+      "Step 3: Audit /etc/sudoers, /etc/sudoers.d, and setuid binaries for unauthorized tampering or backdoors.",
+      "Step 4: Inspect active user sessions (who, w, ps aux) and terminate rogue tty sessions.",
+      "Step 5: Review cron jobs (/etc/cron*, /var/spool/cron) and systemd services created within past 24 hours."
+    ],
+    "verification_query": "journalctl _COMM=sudo --since '2 hours ago'",
+    "automated_action_type": "ACCOUNT_LOCKOUT"
+  },
+  {
+    "playbook_id": "IR-PB-RANSOMWARE-RECOVERY-INHIBIT",
+    "name": "NIST SP 800-61: Ransomware & Inhibit System Recovery Containment",
+    "trigger_technique": "T1490",
+    "severity_baseline": "EMERGENCY_CRITICAL",
+    "containment_steps": [
+      "Step 1: IMMEDIATELY isolate host from network (unplug virtual NIC / disable network adapter).",
+      "Step 2: Kill parent process executing vssadmin/wmic/bcdedit.",
+      "Step 3: Snapshot memory (RAM capture) for volatile malware analysis.",
+      "Step 4: Verify immutable offline backups and cloud repository integrity.",
+      "Step 5: Initiate emergency enterprise SOC alert and threat hunt across all endpoints for matching process hash."
+    ],
+    "verification_query": "Get-Process | Where-Object { $_.Path -like '*update_win*' -or $_.Name -like '*vssadmin*' }",
+    "automated_action_type": "HOST_NETWORK_ISOLATION"
+  },
+  {
+    "playbook_id": "IR-PB-SQLI-EXFIL",
+    "name": "NIST SP 800-61: Web Application Exploit & Data Exfiltration",
+    "trigger_technique": "T1190",
+    "severity_baseline": "HIGH",
+    "containment_steps": [
+      "Step 1: Blacklist offending IP on edge WAF / Cloudflare / reverse proxy.",
+      "Step 2: Identify vulnerable URI parameter and deploy virtual patching rule on WAF.",
+      "Step 3: Audit database query logs to determine extent of unauthorized table access.",
+      "Step 4: If credentials or customer PII were compromised, trigger regulatory notification workflow.",
+      "Step 5: Rotate database service account credentials immediately."
+    ],
+    "verification_query": "tail -n 500 /var/log/nginx/access.log | grep -iE 'union|select|information_schema'",
+    "automated_action_type": "WAF_IP_BLOCK"
+  }
+]

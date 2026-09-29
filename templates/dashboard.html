@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIRA-Brain | Autonomous SOC Incident Response & Threat Hunting Copilot</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0B0F19;
+            --bg-card: #111827;
+            --bg-card-hover: #1F2937;
+            --border-subtle: #374151;
+            --border-accent: #00F0FF;
+            --text-primary: #F9FAFB;
+            --text-secondary: #9CA3AF;
+            --cyan-glow: #00F0FF;
+            --red-alert: #EF4444;
+            --amber-warn: #F59E0B;
+            --green-safe: #10B981;
+            --purple-tech: #8B5CF6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .shield-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00F0FF 0%, #3B82F6 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+        }
+
+        .brand h1 {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .brand p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--green-safe);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--green-safe);
+            font-weight: 600;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green-safe);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--green-safe);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 440px 1fr;
+            gap: 24px;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--cyan-glow);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        select, textarea {
+            width: 100%;
+            background: #0D131F;
+            border: 1px solid var(--border-subtle);
+            color: #E5E7EB;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus, textarea:focus {
+            border-color: var(--cyan-glow);
+        }
+
+        textarea {
+            resize: vertical;
+            height: 220px;
+            line-height: 1.4;
+        }
+
+        .btn-triage {
+            width: 100%;
+            background: linear-gradient(135deg, #00F0FF 0%, #0077FE 100%);
+            color: #000;
+            font-weight: 700;
+            font-size: 14px;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .btn-triage:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        /* Results Area */
+        .results-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .metric-box {
+            background: #0D131F;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .severity-CRITICAL { color: var(--red-alert); }
+        .severity-HIGH { color: var(--amber-warn); }
+        .severity-MEDIUM { color: #38BDF8; }
+        .severity-LOW { color: var(--green-safe); }
+
+        .mitre-banner {
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.15) 0%, rgba(0, 240, 255, 0.05) 100%);
+            border: 1px solid var(--purple-tech);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mitre-badge {
+            background: var(--purple-tech);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .tab-btn.active {
+            background: var(--bg-card-hover);
+            color: var(--cyan-glow);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .reasoning-step {
+            background: #0D131F;
+            border-left: 3px solid var(--cyan-glow);
+            padding: 12px 14px;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+
+        .reasoning-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            color: var(--cyan-glow);
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        pre {
+            background: #090D14;
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            color: #A7F3D0;
+            white-space: pre-wrap;
+        }
+
+        .copy-btn {
+            float: right;
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            font-size: 11px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: -6px;
+        }
+
+        .copy-btn:hover {
+            color: #FFF;
+            border-color: var(--cyan-glow);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="brand">
+            <div class="shield-icon">🛡️</div>
+            <div>
+                <h1>VIRA-SecAgent | Cognitive SOC Copilot</h1>
+                <p>Autonomous Threat Reasoning, MITRE ATT&CK RAG & Active Incident Containment</p>
+            </div>
+        </div>
+        <div class="status-pill">
+            <div class="pulse-dot"></div>
+            VIRA-BRAIN ONLINE
+        </div>
+    </header>
+
+    <div class="layout-grid">
+        <!-- Left: Telemetry Ingestion Input -->
+        <div class="card">
+            <div class="card-title">
+                <span>1. Telemetry Ingestion</span>
+                <span style="font-size: 11px; color: var(--text-secondary);">SIEM / Wazuh</span>
+            </div>
+
+            <div class="form-group">
+                <label for="sample-select">Load Preset Attack Scenario</label>
+                <select id="sample-select" onchange="loadPresetSample()">
+                    <option value="wazuh_ssh_bruteforce.json">SSH Brute Force Attack (T1110.001 - Credential Access)</option>
+                    <option value="win_encoded_powershell.json">Encoded PowerShell Reverse Shell (T1059.001 - Execution)</option>
+                    <option value="priv_escalation_sudo.json">Sudo /etc/shadow Privilege Escalation (T1548.003)</option>
+                    <option value="ransomware_shadowcopy.json">Ransomware Shadow Copy Deletion (T1490 - Impact)</option>
+                    <option value="web_sqli_exfiltration.json">WAF SQL Injection & Exfiltration (T1190 - Initial Access)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="raw-alert-input">Raw JSON Telemetry / Syslog</label>
+                <textarea id="raw-alert-input" placeholder="Paste JSON or Syslog alert here..."></textarea>
+            </div>
+
+            <button class="btn-triage" onclick="executeTriage()">
+                <span>⚡ Trigger Autonomous VIRA-Brain Triage</span>
+            </button>
+        </div>
+
+        <!-- Right: Agent Cognitive Reasoning & Mitigation Output -->
+        <div class="card">
+            <div class="card-title">
+                <span>2. Cognitive Reasoning & Mitigation Artifacts</span>
+                <span id="incident-id-badge" style="font-size: 11px; color: var(--cyan-glow); font-family: 'JetBrains Mono';">AWAITING TELEMETRY</span>
+            </div>
+
+            <div id="results-placeholder" style="text-align: center; padding: 60px 20px; color: var(--text-secondary);">
+                <div style="font-size: 48px; margin-bottom: 12px;">🧠</div>
+                <h3 style="font-size: 16px; margin-bottom: 6px;">VIRA Cognitive Loop Idle</h3>
+                <p style="font-size: 13px;">Select an alert scenario from the left panel and click <b>Trigger Autonomous Triage</b> to activate the RAG & reasoning pipeline.</p>
+            </div>
+
+            <div id="results-display" class="results-container" style="display: none;">
+                <!-- Key Metrics -->
+                <div class="metrics-row">
+                    <div class="metric-box">
+                        <div class="metric-label">Triage Severity</div>
+                        <div id="metric-severity" class="metric-value severity-HIGH">HIGH</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Risk Score</div>
+                        <div id="metric-risk" class="metric-value">75 / 100</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Agent Confidence</div>
+                        <div id="metric-conf" class="metric-value">98%</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="metric-label">Classification</div>
+                        <div id="metric-class" class="metric-value" style="font-size: 15px;">TRUE_POSITIVE</div>
+                    </div>
+                </div>
+
+                <!-- MITRE ATT&CK RAG Banner -->
+                <div class="mitre-banner">
+                    <div>
+                        <div style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase;">MITRE ATT&CK RAG Match</div>
+                        <div id="mitre-tech-name" style="font-size: 15px; font-weight: 700; margin-top: 2px;">Password Guessing (Brute Force)</div>
+                        <div id="mitre-tech-tactic" style="font-size: 12px; color: #D8B4FE;">Tactic: Credential Access</div>
+                    </div>
+                    <div id="mitre-tech-id" class="mitre-badge">T1110.001</div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('tab-reasoning')">Cognitive Reasoning Trace</button>
+                    <button class="tab-btn" onclick="switchTab('tab-containment')">Containment Scripts</button>
+                    <button class="tab-btn" onclick="switchTab('tab-sigma')">Sigma Detection Rule</button>
+                    <button class="tab-btn" onclick="switchTab('tab-summary')">Executive Summary</button>
+                </div>
+
+                <!-- Tab 1: Reasoning Trace -->
+                <div id="tab-reasoning" class="tab-content active">
+                    <div id="reasoning-steps-container"></div>
+                </div>
+
+                <!-- Tab 2: Containment Scripts -->
+                <div id="tab-containment" class="tab-content">
+                    <button class="copy-btn" onclick="copyToClipboard('containment-code')">Copy Script</button>
+                    <label>Linux IPTABLES / UFW Firewall Rule</label>
+                    <pre id="containment-linux"></pre>
+                    <br>
+                    <label>Windows PowerShell Incident Containment</label>
+                    <pre id="containment-win"></pre>
+                </div>
+
+                <!-- Tab 3: Sigma Rule -->
+                <div id="tab-sigma" class="tab-content">
+                    <button class="copy-btn" onclick="copyToClipboard('sigma-code')">Copy YAML</button>
+                    <pre id="sigma-code"></pre>
+                </div>
+
+                <!-- Tab 4: Executive Summary -->
+                <div id="tab-summary" class="tab-content">
+                    <div style="background: #0D131F; border: 1px solid var(--border-subtle); padding: 16px; border-radius: 8px;">
+                        <h4 style="color: var(--cyan-glow); margin-bottom: 8px;">Incident Overview</h4>
+                        <p id="summary-text" style="font-size: 13px; line-height: 1.6; margin-bottom: 14px;"></p>
+                        <h4 style="color: var(--amber-warn); margin-bottom: 8px;">Recommended SecOps Action</h4>
+                        <p id="action-text" style="font-size: 13px; line-height: 1.6;"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const samples = {
+            "wazuh_ssh_bruteforce.json": {{ sample_ssh | tojson }},
+            "win_encoded_powershell.json": {{ sample_ps | tojson }},
+            "priv_escalation_sudo.json": {{ sample_sudo | tojson }},
+            "ransomware_shadowcopy.json": {{ sample_ransom | tojson }},
+            "web_sqli_exfiltration.json": {{ sample_sqli | tojson }}
+        };
+
+        function loadPresetSample() {
+            const select = document.getElementById("sample-select");
+            const choice = select.value;
+            if (samples[choice]) {
+                document.getElementById("raw-alert-input").value = JSON.stringify(samples[choice], null, 2);
+            }
+        }
+
+        window.onload = function() {
+            loadPresetSample();
+        };
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        async function executeTriage() {
+            const rawText = document.getElementById("raw-alert-input").value;
+            let payload;
+            try {
+                payload = JSON.parse(rawText);
+            } catch(e) {
+                payload = rawText;
+            }
+
+            try {
+                const response = await fetch('/api/triage', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ alert: payload })
+                });
+
+                const data = await response.json();
+                renderReport(data);
+            } catch (err) {
+                alert("Error during triage: " + err);
+            }
+        }
+
+        function renderReport(r) {
+            document.getElementById("results-placeholder").style.display = "none";
+            document.getElementById("results-display").style.display = "flex";
+
+            document.getElementById("incident-id-badge").innerText = r.incident_id;
+            
+            // Metrics
+            const sevEl = document.getElementById("metric-severity");
+            sevEl.innerText = r.severity;
+            sevEl.className = "metric-value severity-" + r.severity;
+
+            document.getElementById("metric-risk").innerText = r.risk_score + " / 100";
+            document.getElementById("metric-conf").innerText = Math.round(r.confidence_score * 100) + "%";
+            document.getElementById("metric-class").innerText = r.classification;
+
+            // MITRE
+            if (r.primary_mitre_technique) {
+                document.getElementById("mitre-tech-name").innerText = r.primary_mitre_technique.technique_name;
+                document.getElementById("mitre-tech-tactic").innerText = "Tactic: " + r.primary_mitre_technique.tactic;
+                document.getElementById("mitre-tech-id").innerText = r.primary_mitre_technique.technique_id;
+            }
+
+            // Reasoning Steps
+            const stepsDiv = document.getElementById("reasoning-steps-container");
+            stepsDiv.innerHTML = "";
+            r.reasoning_trace.forEach(step => {
+                const stepCard = document.createElement("div");
+                stepCard.className = "reasoning-step";
+                stepCard.innerHTML = `
+                    <div class="reasoning-header">
+                        <span>STAGE ${step.step_number}: ${step.title}</span>
+                        <span style="color: var(--green-safe);">✓ RESOLVED</span>
+                    </div>
+                    <div style="margin-bottom: 4px;"><b>Observation:</b> ${step.observation}</div>
+                    <div style="margin-bottom: 4px; color: #93C5FD;"><b>Agent Thought:</b> ${step.thought}</div>
+                    <div style="color: var(--text-secondary); font-size: 12px;"><b>Result:</b> ${step.result}</div>
+                `;
+                stepsDiv.appendChild(stepCard);
+            });
+
+            // Remediation
+            document.getElementById("containment-linux").innerText = r.remediation.linux_remediation;
+            document.getElementById("containment-win").innerText = r.remediation.powershell_remediation;
+            document.getElementById("sigma-code").innerText = r.remediation.sigma_rule_yaml;
+
+            // Summary
+            document.getElementById("summary-text").innerText = r.executive_summary;
+            document.getElementById("action-text").innerText = r.recommended_analyst_action;
+        }
+
+        function copyToClipboard(id) {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text);
+            alert("Copied to clipboard!");
+        }
+    </script>
+</body>
+</html>

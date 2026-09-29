@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-09-29T21:42:10.812+0000",
+  "rule": {
+    "level": 10,
+    "description": "sshd: brute force attack trying to get access to the system. Multiple authentication failures from single IP.",
+    "id": "5712",
+    "firedtimes": 24,
+    "groups": ["syslog", "sshd", "authentication_failures"]
+  },
+  "agent": {
+    "id": "001",
+    "name": "prod-bastion-linux-01",
+    "ip": "10.0.1.15"
+  },
+  "manager": {
+    "name": "wazuh-master"
+  },
+  "data": {
+    "srcip": "185.220.101.45",
+    "srcport": "49152",
+    "dstuser": "root",
+    "protocol": "ssh",
+    "system_name": "bastion-host"
+  },
+  "full_log": "Sep 29 21:42:09 prod-bastion sshd[28411]: Failed password for invalid user root from 185.220.101.45 port 49152 ssh2"
+}

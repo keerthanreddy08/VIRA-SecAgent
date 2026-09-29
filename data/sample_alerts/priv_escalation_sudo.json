@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-09-29T21:55:04.220+0000",
+  "rule": {
+    "level": 11,
+    "description": "User www-data executed sudo command without tty to access /etc/shadow. Potential privilege escalation.",
+    "id": "5402",
+    "groups": ["syslog", "sudo", "privilege_escalation"]
+  },
+  "agent": {
+    "id": "002",
+    "name": "web-srv-ecommerce-01",
+    "ip": "10.0.2.14"
+  },
+  "data": {
+    "srcuser": "www-data",
+    "dstuser": "root",
+    "command": "/bin/cat /etc/shadow",
+    "pwd": "/var/www/html",
+    "tty": "unknown"
+  },
+  "full_log": "Sep 29 21:55:03 web-srv-ecommerce sudo: www-data : TTY=unknown ; PWD=/var/www/html ; USER=root ; COMMAND=/bin/cat /etc/shadow"
+}
